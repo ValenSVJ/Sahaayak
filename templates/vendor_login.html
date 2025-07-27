@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Login - Sahaayak{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="max-w-md w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-8">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mb-4 p-3 rounded bg-red-100 text-red-700">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <h2 class="text-2xl font-bold mb-6 text-center">Vendor Login</h2>
+    <form method="post">
+      <div class="mb-4">
+        <label for="phone" class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+        <input type="text" id="phone" name="phone" value="9876543210" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      </div>
+      <div class="mb-6">
+        <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+        <input type="password" id="password" name="password" value="vendor123" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      </div>
+      <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-green-700 transition-colors duration-300">Login</button>
+    </form>
+    
+    <div class="mt-4 text-center">
+      <p class="text-sm text-gray-600">
+        Demo: phone: 9876543210, password: vendor123
+      </p>
+      <a href="{{ url_for('vendor_signup') }}" class="text-blue-600 hover:underline">Register as new vendor</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

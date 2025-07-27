@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sahaayak{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons" defer></script>
+
+    <style>
+        :root {
+            --sidebar-width-collapsed: 5rem;
+            --sidebar-width-expanded: 16rem;
+        }
+
+        /* --- Light Theme (Daylight) --- */
+        .daylight-theme {
+            --background-primary: #f4f5f7;
+            --background-secondary: #ffffff;
+            --background-tertiary: #eef2f9;
+            --border-primary: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-primary: #db2777;
+            --accent-secondary: #7c3aed;
+            --glow-primary: rgba(219, 39, 119, 0.15);
+            --glow-secondary: rgba(124, 58, 237, 0.15);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+        
+        /* --- Dark Theme (Aurora) --- */
+        .aurora-theme {
+            --background-primary: #0d1117;
+            --background-secondary: #161b22;
+            --background-tertiary: #21262d;
+            --border-primary: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-primary: #f778ba;
+            --accent-secondary: #a78bfa;
+            --glow-primary: rgba(247, 120, 186, 0.2);
+            --glow-secondary: rgba(167, 139, 250, 0.2);
+            --card-shadow: 0 0 0 1px var(--border-primary);
+            --card-shadow-hover: 0 0 0 1px var(--accent-primary), 0 10px 30px -5px var(--glow-primary);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--background-primary);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: conic-gradient(#0000 10%, var(--accent-primary));
+            -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 9px), #000 0);
+            animation: spinner-spin 1s infinite linear;
+        }
+        @keyframes spinner-spin { to { transform: rotate(1turn) } }
+
+        .sidebar {
+            width: var(--sidebar-width-collapsed);
+            background-color: var(--background-secondary);
+            border-right: 1px solid var(--border-primary);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, border-color 0.3s ease;
+            overflow: hidden;
+        }
+        .sidebar:hover { width: var(--sidebar-width-expanded); }
+        .sidebar-item {
+            color: var(--text-primary) !important;
+            transition: color 0.2s ease, background-color 0.2s ease;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .sidebar-item:hover {
+            background-color: var(--background-tertiary) !important;
+            color: var(--accent-primary) !important;
+        }
+        .sidebar-item i {
+            color: var(--text-primary) !important;
+            transition: color 0.2s ease;
+            width: 2rem !important;
+            height: 2rem !important;
+            flex-shrink: 0 !important;
+            display: inline-block !important;
+            stroke-width: 2 !important;
+            fill: none !important;
+            stroke: currentColor !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        .sidebar-item:hover i {
+            color: var(--accent-primary) !important;
+        }
+        .sidebar-item span {
+            color: var(--text-primary) !important;
+            margin-left: 1rem !important;
+        }
+        .sidebar-item:hover span {
+            color: var(--accent-primary) !important;
+        }
+        
+        /* Ensure icons are always visible in both themes */
+        .daylight-theme .sidebar-item i {
+            color: #111827 !important;
+            stroke: #111827 !important;
+        }
+        .aurora-theme .sidebar-item i {
+            color: #e6edf3 !important;
+            stroke: #e6edf3 !important;
+        }
+        .daylight-theme .sidebar-item span {
+            color: #111827 !important;
+        }
+        .aurora-theme .sidebar-item span {
+            color: #e6edf3 !important;
+        }
+        
+        /* Force visibility for all feather icons */
+        .sidebar-item svg,
+        .sidebar-item i svg,
+        [data-feather] {
+            color: var(--text-primary) !important;
+            stroke: var(--text-primary) !important;
+            fill: none !important;
+            width: 2rem !important;
+            height: 2rem !important;
+            stroke-width: 2 !important;
+            display: inline-block !important;
+            visibility: visible !important;
+        }
+        
+        .sidebar-item:hover svg,
+        .sidebar-item:hover i svg,
+        .sidebar-item:hover [data-feather] {
+            color: var(--accent-primary) !important;
+            stroke: var(--accent-primary) !important;
+        }
+        
+        /* Special styling for language icon which is an emoji */
+        #language-icon {
+            font-size: 2rem !important;
+            width: 2rem !important;
+            height: 2rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-right: 0 !important;
+        }
+        .sidebar-item .item-text {
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .sidebar:hover .sidebar-item .item-text {
+            opacity: 1; transition-delay: 0.1s;
+        }
+        
+        /* Ensure icons are always visible in collapsed sidebar */
+        .sidebar:not(:hover) .sidebar-item i,
+        .sidebar:not(:hover) .sidebar-item svg,
+        .sidebar:not(:hover) .sidebar-item [data-feather] {
+            display: inline-block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .interactive-card {
+            background-color: var(--background-secondary);
+            border-radius: 1.5rem; box-shadow: var(--card-shadow);
+            transition: all 0.2s ease-out; transform-style: preserve-3d;
+            border: 1px solid var(--border-primary);
+        }
+        .interactive-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .gradient-button {
+            background-image: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            background-size: 200% 200%;
+            transition: background-position 0.4s ease-in-out, transform 0.1s ease;
+        }
+        .gradient-button:hover {
+            background-position: 100% 0; transform: translateY(-2px);
+        }
+        .gradient-button:active { transform: translateY(0) scale(0.98); }
+
+        .reveal {
+            opacity: 0; transform: scale(0.95) translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+        .reveal.visible {
+            opacity: 1; transform: scale(1) translateY(0);
+        }
+        
+        .category-icon { transition: transform 0.3s ease; }
+        .interactive-card:hover .category-icon { transform: scale(1.1) rotate(5deg); }
+        
+        /* Language Modal Styles */
+        .language-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            z-index: 95; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+        }
+        .language-modal.visible {
+            opacity: 1; pointer-events: all;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            z-index: 90; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+        }
+        .modal-overlay.visible {
+            opacity: 1; pointer-events: all;
+        }
+        .modal-content {
+            background-color: var(--background-secondary);
+            border-radius: 1.5rem; padding: 2rem;
+            width: 90%; max-width: 600px;
+            transform: scale(0.95); transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-primary);
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        /* Quantity Controls */
+        .quantity-button {
+            background-color: var(--background-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .quantity-button:hover {
+            background-color: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .quantity-input {
+            background-color: var(--background-secondary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            text-align: center;
+            width: 4rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="daylight-theme">
+
+    <div class="preloader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Emergency preloader hide script -->
+    <script>
+        // Immediate fallback to hide preloader if main script fails
+        setTimeout(function() {
+            var preloader = document.querySelector('.preloader');
+            if (preloader && preloader.style.display !== 'none') {
+                preloader.style.opacity = '0';
+                setTimeout(function() { 
+                    preloader.style.display = 'none'; 
+                }, 300);
+            }
+        }, 1500);
+    </script>
+
+    <!-- Language Selection Modal -->
+    <div id="language-modal" class="language-modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" style="color: var(--text-primary);">Choose Your Language</h3>
+                <button id="language-modal-close" class="p-2 rounded-full hover:bg-[var(--background-tertiary)]">
+                    <i data-feather="x" style="color: var(--text-secondary);"></i>
+                </button>
+            </div>
+            
+            <p class="text-center mb-6" style="color: var(--text-secondary);">भाषा चुनें / Select Language / भाषा निवडा</p>
+            
+            <div class="space-y-4">
+                <!-- English -->
+                <button onclick="selectLanguage('en')" 
+                        class="w-full bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 text-left transition-all duration-200 interactive-card">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-3xl">🇬🇧</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">English</h4>
+                            <p class="text-sm text-gray-600">Continue in English</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <!-- Hindi -->
+                <button onclick="selectLanguage('hi')" 
+                        class="w-full bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-400 rounded-lg p-4 text-left transition-all duration-200 interactive-card">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-3xl">🇮🇳</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">हिंदी</h4>
+                            <p class="text-sm text-gray-600">हिंदी में जारी रखें</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <!-- Marathi -->
+                <button onclick="selectLanguage('mn')" 
+                        class="w-full bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-400 rounded-lg p-4 text-left transition-all duration-200 interactive-card">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-3xl">🟠</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">मराठी</h4>
+                            <p class="text-sm text-gray-600">मराठीत सुरू ठेवा</p>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Response Modal -->
+    <div id="ai-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="ai-modal-title" class="text-2xl font-bold" style="color: var(--text-primary);">AI Assistant</h3>
+                <button id="ai-modal-close" class="p-2 rounded-full hover:bg-[var(--background-tertiary)]">
+                    <i data-feather="x" style="color: var(--text-secondary);"></i>
+                </button>
+            </div>
+            <div id="ai-modal-body" class="text-lg" style="color: var(--text-secondary); min-height: 100px;">
+                <!-- AI content will be injected here -->
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar flex flex-col p-4">
+            <div class="flex-grow space-y-2">
+                <a href="{{ url_for('vendor_dashboard') }}" class="sidebar-item flex items-center p-3 h-14 rounded-lg">
+                    <i data-feather="box" class="w-8 h-8 flex-shrink-0"></i>
+                    <span class="item-text ml-4 font-semibold">Sahaayak</span>
+                </a>
+                <hr class="border-t border-[var(--border-primary)] my-2">
+                <button id="profile-btn" class="sidebar-item flex items-center p-3 h-14 rounded-lg w-full text-left">
+                    <i data-feather="user" class="w-8 h-8 flex-shrink-0"></i>
+                    <span class="item-text ml-4 font-semibold">Profile</span>
+                </button>
+                <button id="orders-btn" class="sidebar-item flex items-center p-3 h-14 rounded-lg w-full text-left">
+                    <i data-feather="shopping-bag" class="w-8 h-8 flex-shrink-0"></i>
+                    <span class="item-text ml-4 font-semibold">Recent Orders</span>
+                </button>
+                <button id="payment-btn" class="sidebar-item flex items-center p-3 h-14 rounded-lg w-full text-left">
+                    <i data-feather="credit-card" class="w-8 h-8 flex-shrink-0"></i>
+                    <span class="item-text ml-4 font-semibold">Saved Payment Info</span>
+                </button>
+                <hr class="border-t border-[var(--border-primary)] my-2">
+                <button id="offers-btn" class="sidebar-item flex items-center p-3 h-14 rounded-lg w-full text-left">
+                    <i data-feather="tag" class="w-8 h-8 flex-shrink-0"></i>
+                    <span class="item-text ml-4 font-semibold">Offers & Deals</span>
+                </button>
+            </div>
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="sidebar-item flex items-center p-3 h-14 rounded-lg mt-4">
+                <span id="theme-icon-container">
+                    <i data-feather="moon" class="w-8 h-8 flex-shrink-0"></i>
+                </span>
+                <span class="item-text ml-4 font-semibold">Switch Theme</span>
+            </button>
+            <!-- Language Toggle Button -->
+            <button id="language-toggle" class="sidebar-item flex items-center p-3 h-14 rounded-lg">
+                <span id="language-icon">🇬🇧</span>
+                <span class="item-text ml-4 font-semibold">Language</span>
+            </button>
+            <!-- Logout Button -->
+            <button onclick="logout()" class="sidebar-item flex items-center p-3 h-14 rounded-lg text-red-500 hover:text-red-400" style="color: #ef4444 !important;">
+                <i data-feather="log-out" class="w-8 h-8 flex-shrink-0" style="color: #ef4444 !important;"></i>
+                <span class="item-text ml-4 font-semibold" style="color: #ef4444 !important;">Logout</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+            {% block vendor_content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentLanguage = localStorage.getItem('vendorLanguage') || 'en';
+        
+        // Language translations
+        const translations = {
+            en: {
+                flag: '🇬🇧',
+                mainTitle: 'Sahaayak',
+                searchPlaceholder: 'Search products...',
+                searchOrdersPlaceholder: 'Search orders...',
+                ordersTitle: 'My Orders',
+                recentOrdersTitle: 'Recently Ordered',
+                categoriesTitle: 'Categories',
+                topWholesalersTitle: 'Top Wholesalers',
+                featuredProductsTitle: 'Featured Products',
+                vegetables: 'Vegetables',
+                dryIngredients: 'Dry Ingredients & Spices',
+                dairy: 'Dairy & Alternatives',
+                breads: 'Breads & Base Items',
+                prepared: 'Prepared/Semi-Cooked',
+                oils: 'Oils & Sauces',
+                snacks: 'Snacks & Dry Goods',
+                beverage: 'Beverage Supplies',
+                packaging: 'Packaging & Miscellaneous',
+                desserts: 'Desserts & Sweets',
+                seafoodMeat: 'Seafood & Meat'
+            },
+            hi: {
+                flag: '🇮🇳',
+                mainTitle: 'सहायक',
+                searchPlaceholder: 'उत्पाद खोजें...',
+                searchOrdersPlaceholder: 'ऑर्डर खोजें...',
+                ordersTitle: 'मेरे ऑर्डर',
+                recentOrdersTitle: 'हाल ही में ऑर्डर किए गए',
+                categoriesTitle: 'श्रेणियाँ',
+                topWholesalersTitle: 'शीर्ष थोक विक्रेता',
+                featuredProductsTitle: 'विशेष उत्पाद',
+                vegetables: 'सब्जियां',
+                dryIngredients: 'सूखी सामग्री और मसाले',
+                dairy: 'डेयरी और विकल्प',
+                breads: 'ब्रेड और बेस आइटम',
+                prepared: 'तैयार/अर्ध-पका हुआ',
+                oils: 'तेल और सॉस',
+                snacks: 'स्नैक्स और सूखे सामान',
+                beverage: 'पेय आपूर्ति',
+                packaging: 'पैकेजिंग और विविध',
+                desserts: 'मिठाई और स्वीट्स',
+                seafoodMeat: 'समुद्री भोजन और मांस'
+            },
+            mn: {
+                flag: '🟠',
+                mainTitle: 'सहाय्यक',
+                searchPlaceholder: 'उत्पादने शोधा...',
+                searchOrdersPlaceholder: 'ऑर्डर शोधा...',
+                ordersTitle: 'माझे ऑर्डर',
+                recentOrdersTitle: 'अलीकडे ऑर्डर केलेले',
+                categoriesTitle: 'श्रेण्या',
+                topWholesalersTitle: 'टॉप होलसेलर्स',
+                featuredProductsTitle: 'विशेष उत्पादने',
+                vegetables: 'भाज्या',
+                dryIngredients: 'कोरडे पदार्थ आणि मसाले',
+                dairy: 'दुग्धजन्य आणि पर्याय',
+                breads: 'ब्रेड आणि बेस आयटम',
+                prepared: 'तयार/अर्ध-शिजवलेले',
+                oils: 'तेल आणि सॉस',
+                snacks: 'स्नॅक्स आणि कोरडे पदार्थ',
+                beverage: 'पेय पुरवठा',
+                packaging: 'पॅकेजिंग आणि किरकोळ',
+                desserts: 'डेझर्ट आणि गोड पदार्थ',
+                seafoodMeat: 'समुद्री खाद्य आणि मांस'
+            }
+        };
+
+        // DOM Elements
+        const preloader = document.querySelector('.preloader');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconContainer = document.getElementById('theme-icon-container');
+        const languageToggle = document.getElementById('language-toggle');
+        const languageModal = document.getElementById('language-modal');
+        const languageModalClose = document.getElementById('language-modal-close');
+        const aiModal = document.getElementById('ai-modal');
+        const aiModalClose = document.getElementById('ai-modal-close');
+        const aiModalBody = document.getElementById('ai-modal-body');
+        const searchInput = document.getElementById('search-input');
+        const aiSearchButton = document.getElementById('ai-search-button');
+
+        // Initialize on DOM content loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Feather Icons
+            feather.replace();
+            
+            // Force re-render icons after a short delay
+            setTimeout(() => {
+                feather.replace();
+            }, 200);
+            
+            // Additional re-render for sidebar icons
+            setTimeout(() => {
+                document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                    icon.style.display = 'inline-block';
+                    icon.style.visibility = 'visible';
+                });
+                feather.replace();
+            }, 500);
+            
+            // Hide preloader
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.display = 'none'; }, 500);
+            }, 500);
+            
+            // Initialize theme from localStorage
+            const savedTheme = localStorage.getItem('vendorTheme');
+            if (savedTheme === 'aurora') {
+                document.body.classList.remove('daylight-theme');
+                document.body.classList.add('aurora-theme');
+                themeIconContainer.innerHTML = '<i data-feather="sun" class="w-8 h-8 flex-shrink-0"></i>';
+                feather.replace();
+                
+                // Apply dark theme colors to sidebar icons
+                setTimeout(() => {
+                    document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                        icon.style.color = '#e6edf3 !important';
+                        icon.style.stroke = '#e6edf3 !important';
+                        icon.style.display = 'inline-block';
+                        icon.style.visibility = 'visible';
+                        icon.style.opacity = '1';
+                    });
+                    feather.replace();
+                }, 100);
+            }
+            
+            // Initialize language from localStorage
+            updateLanguage();
+            
+            // Reveal animations
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('visible');
+                    }, i * 100);
+                });
+            }, 300);
+            
+            // Event Listeners
+            themeToggle.addEventListener('click', toggleTheme);
+            languageToggle.addEventListener('click', showLanguageModal);
+            languageModalClose.addEventListener('click', hideLanguageModal);
+            aiModalClose.addEventListener('click', hideModal);
+            
+            // Set up mutation observer to reinitialize icons when DOM changes
+            const observer = new MutationObserver(function(mutations) {
+                feather.replace();
+                
+                // Ensure sidebar icons are visible and have correct theme colors
+                const isDarkTheme = document.body.classList.contains('aurora-theme');
+                document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                    // Set color based on theme
+                    if (isDarkTheme) {
+                        icon.style.color = '#e6edf3 !important';
+                        icon.style.stroke = '#e6edf3 !important';
+                    } else {
+                        icon.style.color = '#111827 !important';
+                        icon.style.stroke = '#111827 !important';
+                    }
+                    
+                    // Ensure visibility
+                    icon.style.display = 'inline-block';
+                    icon.style.visibility = 'visible';
+                    icon.style.opacity = '1';
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+            
+            // Additional observer specifically for the sidebar
+            const sidebarObserver = new MutationObserver(function(mutations) {
+                const isDarkTheme = document.body.classList.contains('aurora-theme');
+                document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                    // Set color based on theme
+                    if (isDarkTheme) {
+                        icon.style.color = '#e6edf3 !important';
+                        icon.style.stroke = '#e6edf3 !important';
+                    } else {
+                        icon.style.color = '#111827 !important';
+                        icon.style.stroke = '#111827 !important';
+                    }
+                    
+                    // Ensure visibility
+                    icon.style.display = 'inline-block';
+                    icon.style.visibility = 'visible';
+                    icon.style.opacity = '1';
+                });
+                feather.replace();
+            });
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebarObserver.observe(sidebar, { childList: true, subtree: true, attributes: true });
+            }
+            
+            // AI search button
+            if (aiSearchButton) {
+                aiSearchButton.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        callGemini(`I'm a restaurant owner looking for: ${query}. What should I know about this ingredient, its uses, and where to find good quality suppliers?`);
+                    } else {
+                        alert('Please enter a search term');
+                    }
+                });
+            }
+            
+            // Search functionality
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+        });
+
+        // --- FUNCTIONS ---
+
+        async function callGemini(prompt) {
+            aiModalBody.innerHTML = '<div class="spinner"></div>';
+            showModal();
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiKey = "{{ GEMINI_API_KEY }}";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    
+                    // Format the response with proper line breaks and styling
+                    const formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    aiModalBody.innerHTML = `<div style="line-height: 1.6; color: var(--text-primary);">${formattedText}</div>`;
+                } else {
+                    aiModalBody.innerHTML = `<div style="color: var(--text-secondary);">Sorry, I couldn't generate a response right now. Please try again.</div>`;
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                
+                let errorMessage = 'An error occurred while contacting the AI assistant.';
+                if (currentLanguage === 'hi') {
+                    errorMessage = 'AI सहायक से संपर्क करते समय एक त्रुटि हुई।';
+                } else if (currentLanguage === 'mn') {
+                    errorMessage = 'AI सहाय्यकाशी संपर्क साधताना त्रुटी आली.';
+                }
+                
+                aiModalBody.innerHTML = `<div style="color: var(--text-secondary);">${errorMessage}</div>`;
+            } finally {
+                feather.replace();
+            }
+        }
+
+        function updateLanguage() {
+            const lang = translations[currentLanguage];
+            
+            // Update language icon
+            const languageIcon = document.getElementById('language-icon');
+            if (languageIcon) {
+                languageIcon.textContent = lang.flag;
+            }
+            
+            // Update main title
+            const mainTitle = document.getElementById('main-title');
+            if (mainTitle) {
+                mainTitle.textContent = lang.mainTitle;
+            }
+            
+            // Update search placeholder
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.placeholder = lang.searchPlaceholder;
+            }
+            
+            // Update all translatable elements with data-translate attribute
+            Object.keys(lang).forEach(key => {
+                if (key !== 'flag') {
+                    const elements = document.querySelectorAll(`[data-translate="${key}"]`);
+                    elements.forEach(el => {
+                        el.textContent = lang[key];
+                    });
+                    
+                    // Handle placeholder translations
+                    const placeholderElements = document.querySelectorAll(`[data-translate-placeholder="${key}"]`);
+                    placeholderElements.forEach(el => {
+                        if (el.tagName === 'INPUT') {
+                            el.placeholder = lang[key];
+                        }
+                    });
+                    
+                    // Handle specific IDs for backward compatibility
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.tagName === 'INPUT') {
+                            element.placeholder = lang[key];
+                        } else {
+                            element.textContent = lang[key];
+                        }
+                    }
+                }
+            });
+            
+            // Store language preference
+            localStorage.setItem('vendorLanguage', currentLanguage);
+        }
+
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            updateLanguage();
+            hideLanguageModal();
+            
+            // Reload the page with the new language parameter
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('lang', lang);
+            window.location.href = currentUrl.toString();
+        }
+
+        function updateQuantity(button, change) {
+            const quantityInput = button.parentElement.querySelector('.quantity-input');
+            let currentValue = parseInt(quantityInput.value);
+            let newValue = currentValue + change;
+            
+            if (newValue < 1) newValue = 1;
+            if (newValue > 999) newValue = 999;
+            
+            quantityInput.value = newValue;
+        }
+
+        function startVoiceSearch() {
+            const searchInput = document.getElementById('search-input');
+            const micButton = document.getElementById('mic-button');
+            
+            // Check if browser supports speech recognition
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Voice search is not supported in your browser');
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            // Configure recognition
+            recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : currentLanguage === 'mn' ? 'mr-IN' : 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            // Visual feedback
+            micButton.innerHTML = '<i data-feather="mic" class="w-6 h-6 animate-pulse text-red-500"></i>';
+            feather.replace();
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                performSearch();
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                alert('Voice search error. Please try again.');
+            };
+            
+            recognition.onend = function() {
+                // Reset button
+                micButton.innerHTML = '<i data-feather="mic" class="w-6 h-6"></i>';
+                feather.replace();
+            };
+            
+            recognition.start();
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input')?.value.trim();
+            if (query) {
+                // Navigate to search results page with the query
+                window.location.href = `/vendor/search?q=${encodeURIComponent(query)}&lang=${currentLanguage}`;
+            }
+        }
+
+        function viewCategory(categoryId) {
+            // Navigate to category listing page
+            window.location.href = `/vendor/category/${categoryId}?lang=${currentLanguage}`;
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('daylight-theme')) {
+                document.body.classList.remove('daylight-theme');
+                document.body.classList.add('aurora-theme');
+                themeIconContainer.innerHTML = '<i data-feather="sun" class="w-8 h-8 flex-shrink-0"></i>';
+                localStorage.setItem('vendorTheme', 'aurora');
+            } else {
+                document.body.classList.remove('aurora-theme');
+                document.body.classList.add('daylight-theme');
+                themeIconContainer.innerHTML = '<i data-feather="moon" class="w-8 h-8 flex-shrink-0"></i>';
+                localStorage.setItem('vendorTheme', 'daylight');
+            }
+            feather.replace();
+            
+            // Update sidebar icon colors based on current theme
+            setTimeout(() => {
+                const isDarkTheme = document.body.classList.contains('aurora-theme');
+                document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                    // Set color based on theme
+                    if (isDarkTheme) {
+                        icon.style.color = '#e6edf3 !important';
+                        icon.style.stroke = '#e6edf3 !important';
+                    } else {
+                        icon.style.color = '#111827 !important';
+                        icon.style.stroke = '#111827 !important';
+                    }
+                    
+                    // Ensure visibility
+                    icon.style.display = 'inline-block';
+                    icon.style.visibility = 'visible';
+                    icon.style.opacity = '1';
+                });
+                feather.replace();
+            }, 50);
+        }
+
+        function showLanguageModal() {
+            languageModal.classList.add('visible');
+        }
+
+        function hideLanguageModal() {
+            languageModal.classList.remove('visible');
+        }
+
+        function showModal() {
+            aiModal.classList.add('visible');
+        }
+
+        function hideModal() {
+            aiModal.classList.remove('visible');
+        }
+
+        function logout() {
+            // In a real implementation, this would handle logout
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/';
+            }
+        }
+
+        // Sidebar navigation handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('profile-btn').addEventListener('click', () => {
+                alert('Profile section - would show user profile management');
+            });
+
+            document.getElementById('orders-btn').addEventListener('click', () => {
+                window.location.href = `/vendor/orders?lang=${currentLanguage}`;
+            });
+
+            document.getElementById('payment-btn').addEventListener('click', () => {
+                window.location.href = `/vendor/saved-payment-info?lang=${currentLanguage}`;
+            });
+
+            document.getElementById('offers-btn').addEventListener('click', () => {
+                alert('Offers section - would show current deals and promotions');
+            });
+        });
+        
+        // Also initialize on window load as a backup
+        window.addEventListener('load', () => {
+            feather.replace();
+            
+            // Ensure sidebar icons are visible and have correct theme colors
+            setTimeout(() => {
+                const isDarkTheme = document.body.classList.contains('aurora-theme');
+                document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                    // Set color based on theme
+                    if (isDarkTheme) {
+                        icon.style.color = '#e6edf3 !important';
+                        icon.style.stroke = '#e6edf3 !important';
+                    } else {
+                        icon.style.color = '#111827 !important';
+                        icon.style.stroke = '#111827 !important';
+                    }
+                    
+                    // Ensure visibility
+                    icon.style.display = 'inline-block';
+                    icon.style.visibility = 'visible';
+                    icon.style.opacity = '1';
+                });
+                feather.replace();
+            }, 100);
+        });
+        
+        // Add resize event listener to ensure icons remain visible
+        window.addEventListener('resize', () => {
+            const isDarkTheme = document.body.classList.contains('aurora-theme');
+            document.querySelectorAll('.sidebar-item [data-feather]').forEach(icon => {
+                // Set color based on theme
+                if (isDarkTheme) {
+                    icon.style.color = '#e6edf3 !important';
+                    icon.style.stroke = '#e6edf3 !important';
+                } else {
+                    icon.style.color = '#111827 !important';
+                    icon.style.stroke = '#111827 !important';
+                }
+                
+                // Ensure visibility
+                icon.style.display = 'inline-block';
+                icon.style.visibility = 'visible';
+                icon.style.opacity = '1';
+            });
+            feather.replace();
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

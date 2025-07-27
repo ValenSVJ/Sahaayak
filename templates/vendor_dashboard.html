@@ -1,0 +1,423 @@
+{% extends "vendor_base.html" %}
+
+{% block title %}Vendor Dashboard - Sahaayak{% endblock %}
+
+{% block vendor_content %}
+<!-- Main Content -->
+<header class="flex justify-between items-center mb-10">
+    <h1 id="main-title" class="text-4xl font-extrabold" style="color: var(--text-primary);" data-translate="mainTitle">Sahaayak</h1>
+</header>
+
+<!-- AI Search Section -->
+<div class="mb-12 reveal">
+    <div class="relative flex items-center gap-4">
+        <div class="relative flex-grow">
+            <i data-feather="search" class="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-[var(--text-secondary)] pointer-events-none"></i>
+            <input id="search-input" type="text" placeholder="Search products..." class="w-full pl-16 pr-16 py-5 bg-[var(--background-secondary)] border border-[var(--border-primary)] rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] transition-all" style="color: var(--text-primary);">
+            <button id="mic-button" class="absolute right-6 top-1/2 -translate-y-1/2 p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" onclick="startVoiceSearch()">
+                <i data-feather="mic" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <button id="ai-search-button" class="gradient-button font-semibold text-white px-6 py-4 rounded-2xl flex-shrink-0" onclick="performSearch()">Ask AI</button>
+    </div>
+</div>
+
+<!-- Recently Ordered Section -->
+<section class="mb-16">
+    <h2 id="recent-orders-title" class="text-3xl font-bold mb-6 reveal" style="color: var(--text-primary);" data-translate="recentOrdersTitle">Recently Ordered</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Order Card 1 -->
+        <div class="order-card reveal" style="transition-delay: 100ms;">
+            <h3 class="font-bold text-lg product-name mb-2" style="color: var(--text-primary);">Organic Tomatoes (5kg)</h3>
+            <p class="text-sm mb-4" style="color: var(--text-secondary);">You have ordered this 16 times</p>
+            
+            <!-- Quantity Controls -->
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <button class="quantity-button" onclick="updateQuantity(this, -1)">
+                    <i data-feather="minus" class="w-4 h-4"></i>
+                </button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-button" onclick="updateQuantity(this, 1)">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="gradient-button w-full text-white font-semibold py-3 rounded-xl text-md shadow-lg" style="box-shadow: 0 10px 20px -5px var(--glow-primary);">Reorder</button>
+                <button class="generate-desc-button p-3 rounded-xl bg-[var(--background-tertiary)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                    <i data-feather="wand-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Order Card 2 -->
+        <div class="order-card reveal" style="transition-delay: 150ms;">
+            <h3 class="font-bold text-lg product-name mb-2" style="color: var(--text-primary);">Fresh Onions</h3>
+            <p class="text-sm mb-4" style="color: var(--text-secondary);">You have ordered this 2 times</p>
+            
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <button class="quantity-button" onclick="updateQuantity(this, -1)">
+                    <i data-feather="minus" class="w-4 h-4"></i>
+                </button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-button" onclick="updateQuantity(this, 1)">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="gradient-button w-full text-white font-semibold py-3 rounded-xl text-md shadow-lg">Reorder</button>
+                <button class="generate-desc-button p-3 rounded-xl bg-[var(--background-tertiary)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                    <i data-feather="wand-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Order Card 3 -->
+        <div class="order-card reveal" style="transition-delay: 200ms;">
+            <h3 class="font-bold text-lg product-name mb-2" style="color: var(--text-primary);">Basmati Rice (25kg)</h3>
+            <p class="text-sm mb-4" style="color: var(--text-secondary);">You have ordered this 15 times</p>
+            
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <button class="quantity-button" onclick="updateQuantity(this, -1)">
+                    <i data-feather="minus" class="w-4 h-4"></i>
+                </button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-button" onclick="updateQuantity(this, 1)">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="gradient-button w-full text-white font-semibold py-3 rounded-xl text-md shadow-lg">Reorder</button>
+                <button class="generate-desc-button p-3 rounded-xl bg-[var(--background-tertiary)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                    <i data-feather="wand-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Order Card 4 -->
+        <div class="order-card reveal" style="transition-delay: 250ms;">
+            <h3 class="font-bold text-lg product-name mb-2" style="color: var(--text-primary);">Chicken Breast (3kg)</h3>
+            <p class="text-sm mb-4" style="color: var(--text-secondary);">You have ordered 6 times</p>
+            
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <button class="quantity-button" onclick="updateQuantity(this, -1)">
+                    <i data-feather="minus" class="w-4 h-4"></i>
+                </button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-button" onclick="updateQuantity(this, 1)">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="gradient-button w-full text-white font-semibold py-3 rounded-xl text-md shadow-lg">Reorder</button>
+                <button class="generate-desc-button p-3 rounded-xl bg-[var(--background-tertiary)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                    <i data-feather="wand-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section>
+    <h2 id="categories-title" class="text-3xl font-bold mb-6 reveal" style="color: var(--text-primary);">Our Categories</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <!-- Category Cards -->
+        <a href="/vendor/category/vegetables" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 100ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-green-100 flex items-center justify-center text-4xl">
+                🥬
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-vegetables">Vegetables</h3>
+        </a>
+        
+        <a href="/vendor/category/dry-ingredients" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 150ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-amber-100 flex items-center justify-center text-4xl">
+                🧂
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-dry-ingredients">Dry Ingredients & Spices</h3>
+        </a>
+        
+        <a href="/vendor/category/dairy" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 200ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-blue-100 flex items-center justify-center text-4xl">
+                🧀
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-dairy">Dairy & Alternatives</h3>
+        </a>
+        
+        <a href="/vendor/category/breads" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 250ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-yellow-100 flex items-center justify-center text-4xl">
+                🍞
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-breads">Breads & Base Items</h3>
+        </a>
+        
+        <a href="/vendor/category/prepared" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 300ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-blue-100 flex items-center justify-center text-4xl">
+                🧊
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-prepared">Prepared/Semi-Cooked</h3>
+        </a>
+        
+        <a href="/vendor/category/oils-sauces" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 350ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-yellow-100 flex items-center justify-center text-4xl">
+                🧴
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-oils-sauces">Oils & Sauces</h3>
+        </a>
+        
+        <a href="/vendor/category/snacks" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 400ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-amber-100 flex items-center justify-center text-4xl">
+                🍘
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-snacks">Snacks & Dry Goods</h3>
+        </a>
+        
+        <a href="/vendor/category/beverage" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 450ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-purple-100 flex items-center justify-center text-4xl">
+                🧃
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-beverage">Beverage Supplies</h3>
+        </a>
+        
+        <a href="/vendor/category/packaging" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 500ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-gray-100 flex items-center justify-center text-4xl">
+                🛍
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-packaging">Packaging & Miscellaneous</h3>
+        </a>
+        
+        <a href="/vendor/category/desserts" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 550ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-pink-100 flex items-center justify-center text-4xl">
+                🍧
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-desserts">Desserts & Sweets</h3>
+        </a>
+        
+        <a href="/vendor/category/seafood-meat" class="interactive-card p-4 flex flex-col items-center justify-center text-center reveal" style="transition-delay: 600ms;">
+            <div class="category-icon w-20 h-20 rounded-2xl mb-4 bg-blue-100 flex items-center justify-center text-4xl">
+                🐟
+            </div>
+            <h3 class="font-semibold text-sm" style="color: var(--text-primary);" data-translate="category-seafood-meat">Seafood & Meat</h3>
+        </a>
+    </div>
+</section>
+
+<!-- Top Rated Wholesalers + Product Flash Section -->
+<section class="w-full bg-gradient-to-r from-blue-50 to-pink-50 py-12 px-0 mt-16" style="position:relative;">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-8 px-8">
+            <h2 class="text-3xl font-extrabold tracking-tight" style="color: var(--text-primary);">Top Rated Wholesalers</h2>
+            <span class="text-lg text-gray-500">Best sellers & deals for you</span>
+        </div>
+        <div class="flex gap-8 overflow-x-auto pb-4 px-8" style="scroll-snap-type: x mandatory;">
+            {% for wholesaler in top_wholesalers_with_products %}
+            <div class="min-w-[340px] max-w-xs bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center scroll-snap-align-start border border-gray-100 hover:shadow-2xl transition-shadow duration-200">
+                <h3 class="text-xl font-bold mb-1 text-center" style="color: var(--text-primary);">{{ wholesaler.shop_name }}</h3>
+                <div class="text-yellow-500 font-semibold mb-2">⭐ {{ wholesaler.trust_score|round(2) }}</div>
+                <div class="w-full flex flex-col gap-4 mb-4">
+                    {% for product in wholesaler.products %}
+                    <div class="flex items-center gap-4 bg-gray-50 rounded-lg p-3">
+                        <img src="{{ url_for('static', filename=product.image_path) if product.image_path else url_for('static', filename='groceries_bg.jpg') }}" alt="{{ product.name }}" class="w-16 h-16 object-cover rounded-lg border">
+                        <div class="flex-1">
+                            <div class="font-semibold text-md" style="color: var(--text-primary);">{{ product.name }}</div>
+                            <div class="text-green-700 font-bold">₹{{ product.price|round(2) }}</div>
+                        </div>
+                        <form method="post" action="/vendor/order">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold">Order Now</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script>
+// Search functionality (consistent with search results page)
+function performSearch() {
+    const query = document.getElementById('search-input').value;
+    if (query.trim()) {
+        window.location.href = `/vendor/search?q=${encodeURIComponent(query)}`;
+    }
+}
+
+function startVoiceSearch() {
+    if ('webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        recognition.onstart = function() {
+            document.getElementById('mic-button').innerHTML = '<i data-feather="mic-off" class="w-6 h-6"></i>';
+            feather.replace();
+        };
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('search-input').value = transcript;
+            performSearch();
+        };
+        
+        recognition.onend = function() {
+            document.getElementById('mic-button').innerHTML = '<i data-feather="mic" class="w-6 h-6"></i>';
+            feather.replace();
+        };
+        
+        recognition.start();
+    } else {
+        alert('Voice search is not supported in this browser');
+    }
+}
+
+// Category navigation
+function viewCategory(categoryId) {
+    window.location.href = `/vendor/category/${categoryId}`;
+}
+
+// Quantity controls
+function updateQuantity(button, change) {
+    const input = button.parentNode.querySelector('.quantity-input');
+    const newValue = parseInt(input.value) + change;
+    const max = parseInt(input.max) || 100;
+    
+    if (newValue >= 1 && newValue <= max) {
+        input.value = newValue;
+    }
+}
+
+// Ask AI functionality
+function showAIModal() {
+    document.getElementById('ai-modal').classList.add('visible');
+}
+function hideAIModal() {
+    document.getElementById('ai-modal').classList.remove('visible');
+}
+
+// Page initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Search on Enter key
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    // Initialize page
+    initializePage();
+
+    const aiSearchButton = document.getElementById('ai-search-button');
+    const aiModal = document.getElementById('ai-modal');
+    const aiModalClose = document.getElementById('ai-modal-close');
+    const aiModalBody = document.getElementById('ai-modal-body');
+    if (aiSearchButton) {
+        aiSearchButton.onclick = function() {
+            const query = document.getElementById('search-input').value;
+            if (!query.trim()) return;
+            showAIModal();
+            aiModalBody.innerHTML = '<div class="spinner"></div>';
+            fetch('/vendor/ask-ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.response) {
+                    aiModalBody.textContent = data.response;
+                } else {
+                    aiModalBody.textContent = data.error || 'No response from AI.';
+                }
+            })
+            .catch(() => {
+                aiModalBody.textContent = 'AI service temporarily unavailable.';
+            });
+        };
+    }
+    if (aiModalClose) {
+        aiModalClose.onclick = hideAIModal;
+    }
+});
+
+// Initialize page functionality (from vendor_base.html)
+function initializePage() {
+    // Initialize Feather icons
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+    
+    // Initialize reveal animations
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    revealElements.forEach(el => observer.observe(el));
+    
+    // Apply language settings
+    const currentLanguage = localStorage.getItem('vendorLanguage') || 'en';
+    applyLanguage(currentLanguage);
+}
+
+function applyLanguage(language) {
+    // Get language from vendor_base.html translations object
+    if (typeof translations !== 'undefined' && translations[language]) {
+        const lang = translations[language];
+        
+        // Update main title
+        const mainTitle = document.getElementById('main-title');
+        if (mainTitle) mainTitle.textContent = lang.mainTitle;
+        
+        // Update search placeholder
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) searchInput.placeholder = lang.searchPlaceholder;
+        
+        // Update section titles
+        const recentOrdersTitle = document.getElementById('recent-orders-title');
+        if (recentOrdersTitle) recentOrdersTitle.textContent = lang.recentOrdersTitle;
+        
+        const categoriesTitle = document.getElementById('categories-title');
+        if (categoriesTitle) categoriesTitle.textContent = lang.categoriesTitle;
+        
+        // Update category names
+        const categoryElements = {
+            'category-vegetables': lang.vegetables,
+            'category-dry-ingredients': lang.dryIngredients,
+            'category-dairy': lang.dairy,
+            'category-breads': lang.breads,
+            'category-prepared': lang.prepared,
+            'category-oils-sauces': lang.oils,
+            'category-snacks': lang.snacks,
+            'category-beverage': lang.beverage,
+            'category-packaging': lang.packaging,
+            'category-desserts': lang.desserts,
+            'category-seafood-meat': lang.seafoodMeat
+        };
+        
+        Object.keys(categoryElements).forEach(id => {
+            const element = document.querySelector(`[data-translate="${id}"]`);
+            if (element) element.textContent = categoryElements[id];
+        });
+    }
+}
+
+function applyLanguage(language) {
+    // Language application logic would go here
+    // This should match the language system from vendor_base.html
+}
+</script>
+{% endblock vendor_content %}

@@ -1,0 +1,91 @@
+1. Sidebar Profile with Editable Mock Data
+Implement a sidebar with user profile details that includes:
+
+Name (mock value: "Ramesh Kumar")
+
+Phone Number (mock value: "9876543210")
+
+Address (editable field, mock: "Shop No 12, Crawford Market, Mumbai")
+
+Email (mock: "ramesh.kumar@example.com")
+
+Business Name (mock: "Kumar Kirana Stores")
+
+Make all fields editable except email.
+
+2. "Ask AI" Section with Gemini API (Multilingual Smart Assistant)
+Integrate Google Gemini API using the following key:
+AIzaSyDO5QwraCX9xI3L_IvGvYps2hnYH_4aDAU
+
+Functionality:
+
+Accept user queries in any supported language (e.g., Hindi, Marathi, English).
+
+Convert terms like "potato" → "aloo", "batata", depending on the language.
+
+When asked for produce prices (like "what is the price of potato?"), return mock market rate (e.g., ₹22/kg).
+
+Show response in the same language as the question.
+
+Example:
+
+User input: "बटाट्याची किंमत काय आहे?"
+
+AI Response: "सध्या बटाट्याची किंमत सुमारे ₹22 प्रति किलो आहे."
+
+3. Bottom Section – Top Rated Wholesellers + Product Flash
+Pull from database the top-rated wholesellers based on ratings and:
+
+Display their business name
+
+Highlight their top 2-3 products with images & prices
+
+Include “Order Now” button below each product
+
+4. Ordering System (Multi-vendor Cart + Checkout Flow)
+Build a complete flow:
+
+🛒 Cart:
+Add items to cart via “Order Now”
+
+Allow vendor to add products from multiple wholesalers
+
+Cart displays:
+
+Item name, price, quantity
+
+Wholeseller info
+
+Subtotals + total
+
+📍 Address Confirmation:
+Use saved address from profile or allow to enter a new address
+
+Option to save new address
+
+💳 Mock Payment System:
+Select from:
+
+Saved Payment Method (mock: Visa ending in 4242)
+
+Enter new card (mock form)
+
+Payment confirmation screen with “Transaction ID”
+
+✅ Order Confirmation:
+Show summary: Products, Total, Vendor, Delivery Address
+
+5. Wholeseller Dashboard – Order Sync
+Wholeseller Dashboard should display:
+
+All incoming orders (live sync)
+
+Show vendor name, items ordered, total amount, and delivery address
+
+Mark as “In Progress” or “Delivered”
+
+Ensure all the above:
+
+Remains in sync between vendors and wholesalers
+
+Works with mock backend or real-time database

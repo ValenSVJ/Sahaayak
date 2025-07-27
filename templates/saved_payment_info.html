@@ -1,0 +1,150 @@
+{% extends "vendor_base.html" %}
+
+{% block title %}Payment Information - Sahaayak{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 flex items-center">
+            <i data-feather="credit-card" class="mr-3"></i>
+            Payment Information
+        </h1>
+        <p class="text-gray-600 mt-2">Manage your payment methods and billing information</p>
+    </div>
+
+    <!-- Quick UPI Setup -->
+    <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
+        <div class="flex items-center mb-4">
+            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i data-feather="smartphone" class="text-blue-600"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800">Quick UPI Setup</h3>
+                <p class="text-gray-600">Add your UPI ID for instant payments</p>
+            </div>
+        </div>
+        <form class="flex gap-4">
+            <input type="text" placeholder="yourname@paytm" 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                Add UPI
+            </button>
+        </form>
+    </div>
+
+    <!-- Saved Payment Methods -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i data-feather="list" class="mr-2"></i>
+            Saved Payment Methods
+        </h2>
+        
+        <!-- UPI Methods -->
+        <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                        <i data-feather="smartphone" class="text-green-600 w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">vendor@paytm</h4>
+                        <p class="text-sm text-gray-600">Paytm UPI • Primary</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Verified</span>
+                    <button class="text-red-600 hover:text-red-800">
+                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 p-2 rounded-full mr-4">
+                        <i data-feather="credit-card" class="text-blue-600 w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">•••• •••• •••• 1234</h4>
+                        <p class="text-sm text-gray-600">HDFC Bank • Expires 12/26</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Active</span>
+                    <button class="text-red-600 hover:text-red-800">
+                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add New Payment Method -->
+        <button class="mt-4 w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors">
+            <i data-feather="plus" class="w-5 h-5 mx-auto mb-2"></i>
+            Add New Payment Method
+        </button>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i data-feather="clock" class="mr-2"></i>
+            Recent Transactions
+        </h2>
+        
+        <div class="space-y-4">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                        <i data-feather="arrow-down" class="text-green-600 w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">Payment to Fresh Mart Wholesaler</h4>
+                        <p class="text-sm text-gray-600">Jan 25, 2024 • Order #1234</p>
+                    </div>
+                </div>
+                <span class="text-green-600 font-semibold">-₹1,250</span>
+            </div>
+            
+            <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 p-2 rounded-full mr-4">
+                        <i data-feather="arrow-up" class="text-blue-600 w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">Group Buy Savings Credited</h4>
+                        <p class="text-sm text-gray-600">Jan 24, 2024 • Vegetables Bundle</p>
+                    </div>
+                </div>
+                <span class="text-blue-600 font-semibold">+₹180</span>
+            </div>
+            
+            <div class="flex items-center justify-between py-3">
+                <div class="flex items-center">
+                    <div class="bg-green-100 p-2 rounded-full mr-4">
+                        <i data-feather="arrow-down" class="text-green-600 w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">Payment to Spice World</h4>
+                        <p class="text-sm text-gray-600">Jan 23, 2024 • Order #1233</p>
+                    </div>
+                </div>
+                <span class="text-green-600 font-semibold">-₹850</span>
+            </div>
+        </div>
+        
+        <button class="mt-4 w-full text-blue-600 hover:text-blue-800 font-medium">
+            View All Transactions →
+        </button>
+    </div>
+</div>
+
+<script>
+// Initialize feather icons
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+</script>
+{% endblock %}

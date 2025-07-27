@@ -1,0 +1,106 @@
+{% extends "vendor_base.html" %}
+
+{% block title %}{{ category_name }} - Sahaayak{% endblock %}
+
+{% block vendor_content %}
+<div class="container mx-auto p-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ url_for('vendor_dashboard') }}" class="mr-4 text-blue-600 hover:text-blue-800">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <h1 class="text-3xl font-bold text-gray-800">{{ category_name }}</h1>
+    </div>
+
+    {% if products %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <!-- Product Image -->
+                {% if product[7] %}
+                <img src="{{ url_for('static', filename=product[7]) }}" 
+                     alt="{{ product[2] }}" class="w-full h-48 object-cover">
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center">
+                    <span class="text-4xl">
+                        {% if 'Vegetable' in product[3] or 'vegetable' in product[2].lower() %}🥬
+                        {% elif 'Rice' in product[2] or 'Grain' in product[3] %}🌾
+                        {% elif 'Spice' in product[3] or 'spice' in product[2].lower() %}🧂
+                        {% else %}📦{% endif %}
+                    </span>
+                </div>
+                {% endif %}
+                
+                <!-- Product Info -->
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-800 mb-2">{{ product[2] }}</h3>
+                    <p class="text-sm text-gray-600 mb-2">{{ product[3] }}</p>
+                    
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-lg font-bold text-green-600">₹{{ "%.2f"|format(product[4]) }}</span>
+                        <span class="text-sm text-gray-500">Stock: {{ product[5] }}</span>
+                    </div>
+                    
+                    <!-- Wholesaler Info -->
+                    <div class="border-t pt-3 mb-3">
+                        <p class="text-sm text-gray-600">
+                            <strong>{{ product[12] }}</strong><br>
+                            📍 {{ product[13] }}<br>
+                            ⭐ {{ "%.1f"|format(product[14] or 4.5) }} rating
+                        </p>
+                    </div>
+                    
+                    <!-- Quantity and Order -->
+                    <div class="flex items-center gap-2 mb-3">
+                        <button onclick="updateQuantity(this, -1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center">-</button>
+                        <input type="number" value="1" min="1" max="{{ product[5] }}" class="quantity-input w-16 text-center border rounded-md">
+                        <button onclick="updateQuantity(this, 1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center">+</button>
+                    </div>
+                    
+                    <!-- Order Button -->
+                    <form method="post" action="{{ url_for('vendor_order') }}" class="w-full">
+                        <input type="hidden" name="product_id" value="{{ product[0] }}">
+                        <input type="hidden" name="quantity" value="1" class="quantity-value">
+                        <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-medium py-2 px-4 rounded-md transition-all transform hover:scale-105">
+                            🛒 Order Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <div class="text-6xl mb-4">📦</div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Products Available</h3>
+            <p class="text-gray-600">No products found in {{ category_name }} category.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Initialize feather icons when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+
+function updateQuantity(button, change) {
+    const container = button.closest('.flex');
+    const input = container.querySelector('.quantity-input');
+    const hiddenInput = button.closest('.p-4').querySelector('.quantity-value');
+    
+    const newValue = Math.max(1, Math.min(parseInt(input.value) + change, parseInt(input.max)));
+    input.value = newValue;
+    hiddenInput.value = newValue;
+}
+
+// Update quantity when input changes
+document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('quantity-input')) {
+        const hiddenInput = e.target.closest('.p-4').querySelector('.quantity-value');
+        hiddenInput.value = e.target.value;
+    }
+});
+</script>
+{% endblock %}

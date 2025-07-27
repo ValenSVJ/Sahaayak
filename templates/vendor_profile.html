@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Profile - Sahaayak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">Profile Details</h2>
+        <form id="profile-form" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Name</label>
+                <input type="text" id="name" name="name" value="Ramesh Kumar" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Phone Number</label>
+                <input type="text" id="phone" name="phone" value="9876543210" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Address</label>
+                <input type="text" id="address" name="address" value="Shop No 12, Crawford Market, Mumbai" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Email</label>
+                <input type="email" id="email" name="email" value="ramesh.kumar@example.com" class="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100 cursor-not-allowed" readonly />
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Business Name</label>
+                <input type="text" id="business" name="business" value="Kumar Kirana Stores" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <button type="button" onclick="saveProfile()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold mt-4">Save Changes</button>
+        </form>
+        <div id="save-msg" class="text-green-600 text-center mt-4 hidden">Profile saved (mock)!</div>
+    </div>
+    <script>
+        function saveProfile() {
+            // Mock save, just show message
+            document.getElementById('save-msg').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('save-msg').classList.add('hidden');
+                window.location.href = '/vendor/dashboard';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
